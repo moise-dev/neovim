@@ -1,4 +1,4 @@
-ENSURE_INSTALLED = { "lua_ls", "pyright", "ts_ls", "biome", "asm_lsp" }
+ENSURE_INSTALLED = { "lua_ls", "pyright", "ts_ls", "biome", "asm_lsp", "gopls" }
 
 return {
 	"neovim/nvim-lspconfig",
