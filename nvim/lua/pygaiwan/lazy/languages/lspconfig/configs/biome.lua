@@ -1,6 +1,3 @@
-local get_lint_config_path = require("pygaiwan.linters").get_lint_config_path
-
-
 return {
 	capabilities = capabilities,
 	default_config = {
@@ -19,7 +16,6 @@ return {
 			"typescriptreact",
 			"vue",
 		},
-		root_dir = get_lint_config_path("biome", "json"),
 		single_file_support = false,
 	},
 	docs = {

@@ -1,5 +1,5 @@
 return {
-	"gaiwan-dev/nvim-repl",
+	"moise-dev/nvim-repl",
 	branch = "master",
 
 	config = function()

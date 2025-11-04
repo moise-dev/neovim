@@ -1,7 +1,3 @@
--- Config for formatters and format on save.
-
-local utils = require("pygaiwan.lazy.languages.lspconfig.utils")
-
 return {
 	"stevearc/conform.nvim",
 	event = { "BufReadPre", "BufNewFile" },
@@ -12,14 +8,15 @@ return {
 
 		conform.setup({
 			formatters_by_ft = {
-				javascript = { "biome" },
-				typescript = { "biome" },
-				javascriptreact = { "biome" },
-				typescriptreact = { "biome" },
-				svelte = { "biome" },
+				astro = { "biome" },
 				css = { "biome" },
 				html = { "biome" },
+				javascript = { "biome" },
+				javascriptreact = { "biome" },
 				json = { "biome" },
+				svelte = { "biome" },
+				typescript = { "biome" },
+				typescriptreact = { "biome" },
 				yaml = { "biome" },
 				lua = { "stylua" },
 				python = { "ruff" },
@@ -37,8 +34,6 @@ return {
 						"format",
 						"--stdin-filename",
 						"$FILENAME",
-						"--config",
-						utils.get_lint_config_path("ruff", "toml"),
 					},
 					stdin = true,
 				},
@@ -47,8 +42,6 @@ return {
 						"format",
 						"--stdin-file-path",
 						"$FILENAME",
-						"--config-path",
-						utils.get_lint_config_path("biome", "josn", true),
 					},
 					stdin = true,
 				},

@@ -19,7 +19,7 @@ return {
 		name = ".venv",
 		auto_refresh = true,
 	},
-	branch = "regexp", -- it is the new version for some reason
+	branch = "main",
 	event = "VeryLazy", -- Optional: needed only if you want to type `:VenvSelect` without a keymapping
 	keys = {
 		-- Keymap to open VenvSelector to pick a venv.

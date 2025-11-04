@@ -1,6 +1,3 @@
--- TODO: review, i think the args might be wrong, see formatter for example.
-local utils = require("pygaiwan.lazy.languages.lspconfig.utils")
-
 return {
 	"mfussenegger/nvim-lint",
 	event = {
@@ -11,19 +8,22 @@ return {
 		local lint = require("lint")
 
 		lint.linters_by_ft = {
+			astro = { "biomejs" },
+			css = { "biomejs" },
+			html = { "biomejs" },
 			javascript = { "biomejs" },
-			typescript = { "biomejs" },
 			javascriptreact = { "biomejs" },
+			json = { "biomejs" },
+			svelte = { "biomejs" },
+			typescript = { "biomejs" },
 			typescriptreact = { "biomejs" },
-			python = { "ruff" },
+			yaml = { "biomejs" },
 		}
 		local ruff = lint.linters.ruff
 		ruff.args = {
 			"check",
 			"--stdin-filename",
 			"$FILENAME",
-			"--config",
-			utils.get_lint_config_path("ruff", "toml"),
 		}
 
 		local biome = lint.linters.biomejs
@@ -31,8 +31,6 @@ return {
 			"lint",
 			"--stdin-file-path",
 			"$FILENAME",
-			"--config-path ",
-			utils.get_lint_config_path("biome", "json", true),
 		}
 
 		local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })

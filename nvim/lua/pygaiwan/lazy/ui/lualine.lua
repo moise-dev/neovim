@@ -90,28 +90,6 @@ return {
 		})
 
 		insert_left({ "branch", icon = "", color = { fg = colors.blue } })
-		insert_left({
-			function()
-				local linter_mapping = {
-					["python"] = { name = "ruff", ext = "toml" },
-					["javascript"] = { name = "biome", ext = "json" },
-					["lua"] = { name = ".stylua", ext = "toml" },
-				}
-				local ft = vim.bo.filetype
-				local linter = linter_mapping[ft]
-				if linter == nil then
-					return ""
-				end
-				local path = utils.get_lint_config_path(linter.name, linter.ext)
-				if path:find(".config/" .. linter.name) then
-					return "Config: Standard"
-				end
-				return "Config: Project"
-			end,
-			icon = " ",
-			color = { fg = colors.teal },
-		})
-
 		insert_left({ "filename", path = 2, icon = " ", color = { fg = colors.blue } })
 
 		insert_right({

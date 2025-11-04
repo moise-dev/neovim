@@ -1,4 +1,4 @@
-ENSURE_INSTALLED = { "lua_ls", "pyright", "ts_ls", "biome", "asm_lsp", "gopls" }
+ENSURE_INSTALLED = { "lua_ls", "pyright", "ts_ls", "biome", "asm_lsp", "gopls", "astro", "typos_lsp" }
 
 return {
 	"neovim/nvim-lspconfig",
@@ -41,7 +41,7 @@ return {
 			ensure_installed = ENSURE_INSTALLED,
 			handlers = {
 				-- This is for setting up servers that are not in the ENSURE_INSTALLED list
-				function(server_name)
+				function(server_name) -- default handler (optional)
 					require("lspconfig")[server_name].setup({
 						capabilities = capabilities,
 					})
@@ -49,31 +49,30 @@ return {
 				-- Every LSP that needs a specific config needs to have a file in lspconfig/config
 				-- and it is required to get the config from the file and perform the setup.
 				["lua_ls"] = function()
-					local lspconfig = require("lspconfig")
+					local lspconfig = vim.lsp.config
 					local config = require("pygaiwan.lazy.languages.lspconfig.configs.lua_ls")
 					config.capabilities = capabilities
 					lspconfig.lua_ls.setup(config)
 				end,
 				["ts_ls"] = function()
-					local lspconfig = require("lspconfig")
+					local lspconfig = vim.lsp.config
 					local config = require("pygaiwan.lazy.languages.lspconfig.configs.ts_ls")
 					config.capabilities = capabilities
 					lspconfig.ts_ls.setup(config)
 				end,
 				["pyright"] = function()
-					local lspconfig = require("lspconfig")
+					local lspconfig = vim.lsp.config
 					local config = require("pygaiwan.lazy.languages.lspconfig.configs.pyright")
 					config.capabilities = capabilities
 					lspconfig.pyright.setup(config)
 				end,
+				["typos_lsp"] = function()
+					local lspconfig = vim.lsp.config
+					local config = require("pygaiwan.lazy.languages.lspconfig.configs.typos")
+					lspconfig.typos_lsp.setup(config)
+				end,
 			},
 		})
-
-		-- this needs to stay here cause is not builtin supported by mason.
-		local lspconfig = require("lspconfig")
-		local yara_config = require("pygaiwan.lazy.languages.lspconfig.configs.yara")
-		yara_config.capabilities = capabilities
-		lspconfig.yls.setup(yara_config)
 
 		-- create the Code group in wk
 		local wk = require("which-key")

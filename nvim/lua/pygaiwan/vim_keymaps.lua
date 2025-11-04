@@ -35,7 +35,6 @@ vim.keymap.set("i", "<C-p>", "<C-x><C-f>", { desc = "Complete Path" })
 
 vim.filetype.add({
 	extension = {
-		yara = "yara",
-		yar = "yara",
+		mdx = "markdown",
 	},
 })
