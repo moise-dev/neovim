@@ -33,8 +33,12 @@ vim.keymap.set("n", "<A-w>", ":set wrap<CR>", { desc = "[W]ord [w]rap" })
 vim.keymap.set("n", "<leader>x", "<cmd>! chmod +x %<CR>", { silent = true, desc = "Make file executable" })
 vim.keymap.set("i", "<C-p>", "<C-x><C-f>", { desc = "Complete Path" })
 
+vim.keymap.set("n", "<leader>as", function()
+    vim.cmd("AutoSave toggle")
+end, { desc = "Toggle AutoSave" })
+
 vim.filetype.add({
-	extension = {
-		mdx = "markdown",
-	},
+    extension = {
+        mdx = "markdown",
+    },
 })
