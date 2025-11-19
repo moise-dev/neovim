@@ -1,4 +1,13 @@
-ENSURE_INSTALLED = { "lua_ls", "pyright", "ts_ls", "biome", "gopls", "astro", "typos_lsp" }
+local ENSURE_INSTALLED = {
+	"lua_ls",
+	"pyright",
+	"ts_ls",
+	"biome",
+	"gopls",
+	"astro",
+	"typos_lsp",
+	"ruff",
+}
 
 return {
 	"neovim/nvim-lspconfig",
@@ -13,12 +22,14 @@ return {
 		local cmp = require("cmp")
 		local cmp_select = { behavior = cmp.SelectBehavior.Select }
 		local cmp_lsp = require("cmp_nvim_lsp")
+
 		local capabilities = vim.tbl_deep_extend(
 			"force",
 			{},
 			vim.lsp.protocol.make_client_capabilities(),
 			cmp_lsp.default_capabilities()
 		)
+
 		cmp.setup({
 			sources = { { name = "nvim_lsp" } },
 			snippet = {
@@ -26,7 +37,6 @@ return {
 					vim.snippet.expand(args.body)
 				end,
 			},
-			-- mappings for autocomplete
 			mapping = cmp.mapping.preset.insert({
 				["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
 				["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
@@ -34,71 +44,145 @@ return {
 			}),
 		})
 
-		require("mason").setup({
-			PATH = "append",
-		})
+		require("mason").setup({ PATH = "append" })
 		require("mason-lspconfig").setup({
 			ensure_installed = ENSURE_INSTALLED,
+
 			handlers = {
-				-- This is for setting up servers that are not in the ENSURE_INSTALLED list
-				function(server_name) -- default handler (optional)
+				-- default handler
+				function(server_name)
 					require("lspconfig")[server_name].setup({
 						capabilities = capabilities,
 					})
 				end,
-				-- Every LSP that needs a specific config needs to have a file in lspconfig/config
-				-- and it is required to get the config from the file and perform the setup.
-				-- keep this as-is:
+
+				-----------------------------------------------------------------
+				-- Lua LS
+				-----------------------------------------------------------------
 				["lua_ls"] = function()
-					local lspconfig = require("lspconfig")
-					local config = require("pygaiwan.lazy.languages.lspconfig.configs.lua_ls")
-					config.capabilities = capabilities
-					lspconfig.lua_ls.setup(config)
+					require("lspconfig").lua_ls.setup({
+						capabilities = capabilities,
+						settings = {
+							Lua = {
+								diagnostics = {
+									globals = { "bit", "vim", "it", "describe", "before_each", "after_each", "are" },
+								},
+								workspace = { checkThirdParty = false },
+								telemetry = { enable = false },
+							},
+						},
+					})
 				end,
 
+				-----------------------------------------------------------------
+				-- TypeScript / tsserver
+				-----------------------------------------------------------------
 				["ts_ls"] = function()
-					local lspconfig = require("lspconfig")
-					local config = require("pygaiwan.lazy.languages.lspconfig.configs.ts_ls")
-					config.capabilities = capabilities
-					lspconfig.ts_ls.setup(config)
+					require("lspconfig").ts_ls.setup({
+						capabilities = capabilities,
+						default_config = {
+							init_options = { hostInfo = "neovim" },
+							cmd = { "typescript-language-server", "--stdio" },
+							filetypes = {
+								"javascript",
+								"javascriptreact",
+								"javascript.jsx",
+								"typescript",
+								"typescriptreact",
+								"typescript.tsx",
+							},
+							single_file_support = true,
+						},
+						settings = {
+							typescript = {
+								format = {
+									indentSize = 4,
+									convertTabsToSpaces = true,
+								},
+							},
+						},
+					})
 				end,
 
+				-----------------------------------------------------------------
+				-- Pyright (Python type checking)
+				-----------------------------------------------------------------
 				["pyright"] = function()
-					local lspconfig = require("lspconfig")
-					local config = require("pygaiwan.lazy.languages.lspconfig.configs.pyright")
-					config.capabilities = capabilities
-					lspconfig.pyright.setup(config)
+					require("lspconfig").pyright.setup({
+						-- cmd = { "pyright-langserver", "--stdio" },
+						filetypes = { "python" },
+						capabilities = capabilities,
+						settings = {
+							pyright = {
+								disableOrganizeImports = true,
+							},
+							python = {
+								analysis = {
+									ignore = { "*" }, -- Let ruff handle linting
+									autoImportCompletions = true,
+								},
+							},
+						},
+					})
 				end,
 
+				-----------------------------------------------------------------
+				-- Ruff (Python linting & formatting)
+				-----------------------------------------------------------------
+				["ruff"] = function()
+					require("lspconfig").ruff.setup({
+						capabilities = {
+							general = {
+								positionEncodings = { "utf-16" },
+							},
+						},
+					})
+				end,
+
+				-----------------------------------------------------------------
+				-- Typos LSP
+				-----------------------------------------------------------------
 				["typos_lsp"] = function()
-					local lspconfig = require("lspconfig")
-					local config = require("pygaiwan.lazy.languages.lspconfig.configs.typos")
-					lspconfig.typos_lsp.setup(config)
+					require("lspconfig").typos_lsp.setup({
+						cmd = { "typos-lsp" },
+						capabilities = capabilities,
+						cmd_env = { RUST_LOG = "error" },
+						init_options = {
+							-- How typos are rendered in the editor, can be one of an Error, Warning, Info or Hint.
+							-- Defaults to Info.
+							diagnosticSeverity = "Warning",
+						},
+					})
 				end,
 			},
 		})
 
-		-- create the Code group in wk
-		local wk = require("which-key")
-		wk.add({
-			{ "<leader>c", group = "Code" },
-		})
-
+		-------------------------------------------------------------------------
+		-- Keybindings on LspAttach
+		-------------------------------------------------------------------------
 		vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(event)
 				local map = function(key, func, desc)
-					vim.keymap.set("n", key, func, { buffer = event.buf, desc = "LSP: " .. desc })
+					vim.keymap.set("n", key, func, {
+						buffer = event.buf,
+						desc = "LSP: " .. desc,
+					})
 				end
 
-				map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-				map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
-				map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-				map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-				map("K", vim.lsp.buf.hover, "Hover Documentation")
-				map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-				map("<leader>cD", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
-				map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+				map("gd", require("telescope.builtin").lsp_definitions, "Goto Definition")
+				map("gD", vim.lsp.buf.declaration, "Goto Declaration")
+				map("gI", require("telescope.builtin").lsp_implementations, "Goto Implementation")
+				map("gr", require("telescope.builtin").lsp_references, "Goto References")
+				map("K", vim.lsp.buf.hover, "Hover Docs")
+				map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+				map("<leader>cD", require("telescope.builtin").lsp_type_definitions, "Type Definition")
+				map("<leader>rn", vim.lsp.buf.rename, "Rename")
 			end,
+		})
+
+		-- Which-key grouping
+		require("which-key").add({
+			{ "<leader>c", group = "Code" },
 		})
 	end,
 }

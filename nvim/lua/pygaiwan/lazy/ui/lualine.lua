@@ -1,6 +1,4 @@
 -- Customize the line at the bottom of Neovim
-local utils = require("pygaiwan.lazy.languages.lspconfig.utils")
-
 return {
 	"nvim-lualine/lualine.nvim",
 	dependencies = {
