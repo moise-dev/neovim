@@ -1,4 +1,5 @@
 local ENSURE_INSTALLED = {
+	"clangd",
 	"lua_ls",
 	"pyright",
 	"ts_ls",
@@ -69,6 +70,16 @@ return {
 								},
 								workspace = { checkThirdParty = false },
 								telemetry = { enable = false },
+							},
+						},
+					})
+				end,
+
+				["gopls"] = function()
+					require("lspconfig").gopls.setup({
+						settings = {
+							gopls = {
+								env = { GOOS = "windows" },
 							},
 						},
 					})
