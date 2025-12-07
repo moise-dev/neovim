@@ -14,4 +14,12 @@ return {
 			desc = "Buffer Local Keymaps (which-key)",
 		},
 	},
+	config = function(_, opts)
+		local wk = require("which-key")
+		wk.setup(opts)
+
+		wk.add({
+			{ "<leader>a", group = "Astro" },
+		})
+	end,
 }

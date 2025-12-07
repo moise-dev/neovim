@@ -34,11 +34,40 @@ vim.keymap.set("n", "<leader>x", "<cmd>! chmod +x %<CR>", { silent = true, desc 
 vim.keymap.set("i", "<C-p>", "<C-x><C-f>", { desc = "Complete Path" })
 
 vim.keymap.set("n", "<leader>as", function()
-    vim.cmd("AutoSave toggle")
+	vim.cmd("AutoSave toggle")
 end, { desc = "Toggle AutoSave" })
 
 vim.filetype.add({
-    extension = {
-        mdx = "markdown",
-    },
+	extension = {
+		mdx = "markdown",
+	},
 })
+
+-- Malware Reports
+vim.keymap.set(
+	"n",
+	"<leader>aa",
+	'i<CustAside variant="answer">\n</CustAside><Esc>',
+	{ noremap = true, silent = true, desc = "Astro Answer" }
+)
+
+vim.keymap.set(
+	"n",
+	"<leader>ab",
+	'i<BackReferenceCitation id="x"/><Esc>',
+	{ noremap = true, silent = true, desc = "Astro BackReferenceCitation" }
+)
+
+vim.keymap.set(
+	"n",
+	"<leader>aq",
+	'i<CustAside variant="question">\n</CustAside><Esc>',
+	{ noremap = true, silent = true, desc = "Astro Question" }
+)
+
+vim.keymap.set(
+	"n",
+	"<leader>at",
+	'i<CustAside variant="tip">\n</CustAside><Esc>',
+	{ noremap = true, silent = true, desc = "Astro Tip" }
+)
