@@ -60,6 +60,8 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "Astro Question" }
 )
 
+vim.keymap.set("n", "<leader>ar", "a → ", { noremap = true, silent = true, desc = "Astro Arrow" })
+
 vim.keymap.set(
 	"n",
 	"<leader>at",
