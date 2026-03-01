@@ -51,7 +51,12 @@ vim.keymap.set(
 	{ noremap = true, silent = true, desc = "Astro Answer" }
 )
 
-vim.keymap.set("n", "<leader>ab", 'i<Cit id="x"/><Esc>', { noremap = true, silent = true, desc = "Astro Cit" })
+vim.keymap.set(
+	"n",
+	"<leader>ab",
+	'i<Ref id="x"/><Esc>',
+	{ noremap = true, silent = true, desc = "Astro BackReference" }
+)
 
 vim.keymap.set(
 	"n",
