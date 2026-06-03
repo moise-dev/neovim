@@ -27,6 +27,7 @@ return {
 			{ "<leader>s", group = "Search", icon = "" },
 			{ "<leader>t", group = "Tests" },
 			{ "<leader>v", group = "Venv", icon = "" },
+			{ "<leader>z", group = "Zeal" },
 		})
 	end,
 }
