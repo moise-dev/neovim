@@ -1,3 +1,4 @@
+-- Add Lua development helpers for editing Neovim config and plugin code.
 return {
 	{
 		"folke/lazydev.nvim",

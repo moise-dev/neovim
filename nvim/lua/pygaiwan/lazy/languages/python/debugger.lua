@@ -1,5 +1,43 @@
+-- Configure nvim-dap for Python debugging and debugger navigation keymaps.
 return {
 	"mfussenegger/nvim-dap",
+	keys = {
+		{
+			"<leader>db",
+			function()
+				require("dap").toggle_breakpoint()
+			end,
+			desc = "Set Breakpoint",
+		},
+		{
+			"<leader>dn",
+			function()
+				require("dap").step_over()
+			end,
+			desc = "Step Over",
+		},
+		{
+			"<leader>di",
+			function()
+				require("dap").step_into()
+			end,
+			desc = "Step Into",
+		},
+		{
+			"<leader>dc",
+			function()
+				require("dap").continue()
+			end,
+			desc = "Continue",
+		},
+		{
+			"<leader>dr",
+			function()
+				require("dap").repl.open()
+			end,
+			desc = "Open REPL",
+		},
+	},
 	config = function()
 		local dap = require("dap")
 
@@ -18,14 +56,5 @@ return {
 				program = "${file}",
 			},
 		}
-		local wk = require("which-key")
-		wk.add({
-			{ "<leader>d", group = "Debugger" },
-			{ "<leader>db", dap.toggle_breakpoint, desc = "Set Breakpoint", mode = "n" },
-			{ "<leader>dn", dap.step_over, desc = "Step Over", mode = "n" },
-			{ "<leader>di", dap.step_into, desc = "Step Into", mode = "n" },
-			{ "<leader>dc", dap.continue, desc = "Continue", mode = "n" },
-			{ "<leader>dr", dap.repl.open, desc = "Open REPL", mode = "n" },
-		})
 	end,
 }

@@ -93,26 +93,23 @@ return {
 		insert_right({
 			function()
 				local msg = "No Active Lsp"
-				local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
-				local clients = vim.lsp.get_clients()
-				local lsp_names = {}
+				local clients = vim.lsp.get_clients({ bufnr = 0 })
 
 				if next(clients) == nil then
 					return msg
 				end
 
+				local seen = {}
+				local lsp_names = {}
+
 				for _, client in ipairs(clients) do
-					local filetypes = client.config.filetypes
-					if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+					if not seen[client.name] then
+						seen[client.name] = true
 						table.insert(lsp_names, client.name)
 					end
 				end
 
-				if #lsp_names > 0 then
-					return table.concat(lsp_names, ", ")
-				else
-					return msg
-				end
+				return table.concat(lsp_names, ", ")
 			end,
 
 			icon = " LSP:",

@@ -1,3 +1,4 @@
+-- Configure external code formatters and format-on-save behavior via conform.nvim.
 return {
 	"stevearc/conform.nvim",
 	event = { "BufReadPre", "BufNewFile" },
@@ -23,7 +24,7 @@ return {
 			},
 			format_on_save = {
 				-- will fallback to lsp formatting if conform cannot do it
-				lsp_fallback = true,
+				lsp_format = "fallback",
 				async = false,
 				timeout_ms = 500,
 			},
@@ -50,7 +51,7 @@ return {
 
 		vim.keymap.set({ "n", "v" }, "<leader>cf", function()
 			conform.format({
-				lsp_fallback = true,
+				lsp_format = "fallback",
 				async = false,
 				timeout_ms = 500,
 			})

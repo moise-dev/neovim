@@ -1,3 +1,4 @@
+-- Configure LSP servers, completion capabilities, Mason integration, and LSP keymaps.
 local ENSURE_INSTALLED = {
 	"clangd",
 	"lua_ls",
@@ -12,6 +13,7 @@ local ENSURE_INSTALLED = {
 
 return {
 	"neovim/nvim-lspconfig",
+	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
@@ -45,7 +47,20 @@ return {
 			}),
 		})
 
-		require("mason").setup({ PATH = "append" })
+		require("mason").setup({
+			PATH = "append",
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
+				},
+			},
+			pip = {
+				upgrade_pip = true,
+				install_args = { "--no-cache-dir" },
+			},
+		})
 		require("mason-lspconfig").setup({
 			ensure_installed = ENSURE_INSTALLED,
 
@@ -77,11 +92,7 @@ return {
 
 				["gopls"] = function()
 					require("lspconfig").gopls.setup({
-						settings = {
-							gopls = {
-								env = { GOOS = "windows" },
-							},
-						},
+						capabilities = capabilities,
 					})
 				end,
 
@@ -91,19 +102,17 @@ return {
 				["ts_ls"] = function()
 					require("lspconfig").ts_ls.setup({
 						capabilities = capabilities,
-						default_config = {
-							init_options = { hostInfo = "neovim" },
-							cmd = { "typescript-language-server", "--stdio" },
-							filetypes = {
-								"javascript",
-								"javascriptreact",
-								"javascript.jsx",
-								"typescript",
-								"typescriptreact",
-								"typescript.tsx",
-							},
-							single_file_support = true,
+						init_options = { hostInfo = "neovim" },
+						cmd = { "typescript-language-server", "--stdio" },
+						filetypes = {
+							"javascript",
+							"javascriptreact",
+							"javascript.jsx",
+							"typescript",
+							"typescriptreact",
+							"typescript.tsx",
 						},
+						single_file_support = true,
 						settings = {
 							typescript = {
 								format = {
@@ -129,7 +138,6 @@ return {
 							},
 							python = {
 								analysis = {
-									ignore = { "*" }, -- Let ruff handle linting
 									autoImportCompletions = true,
 								},
 							},
@@ -141,12 +149,13 @@ return {
 				-- Ruff (Python linting & formatting)
 				-----------------------------------------------------------------
 				["ruff"] = function()
-					require("lspconfig").ruff.setup({
-						capabilities = {
-							general = {
-								positionEncodings = { "utf-16" },
-							},
+					local ruff_capabilities = vim.tbl_deep_extend("force", {}, capabilities, {
+						general = {
+							positionEncodings = { "utf-16" },
 						},
+					})
+					require("lspconfig").ruff.setup({
+						capabilities = ruff_capabilities,
 					})
 				end,
 
@@ -182,18 +191,14 @@ return {
 
 				map("gd", require("telescope.builtin").lsp_definitions, "Goto Definition")
 				map("gD", vim.lsp.buf.declaration, "Goto Declaration")
-				map("gI", require("telescope.builtin").lsp_implementations, "Goto Implementation")
-				map("gr", require("telescope.builtin").lsp_references, "Goto References")
 				map("K", vim.lsp.buf.hover, "Hover Docs")
-				map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
-				map("<leader>cD", require("telescope.builtin").lsp_type_definitions, "Type Definition")
-				map("<leader>rn", vim.lsp.buf.rename, "Rename")
+				map("<leader>la", vim.lsp.buf.code_action, "Code Action")
+				map("<leader>li", require("telescope.builtin").lsp_implementations, "Goto Implementation")
+				map("<leader>lr", require("telescope.builtin").lsp_references, "Goto References")
+				map("<leader>lt", require("telescope.builtin").lsp_type_definitions, "Type Definition")
+				map("<leader>ln", vim.lsp.buf.rename, "Rename")
 			end,
 		})
 
-		-- Which-key grouping
-		require("which-key").add({
-			{ "<leader>c", group = "Code" },
-		})
 	end,
 }

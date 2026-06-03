@@ -19,7 +19,14 @@ return {
 		wk.setup(opts)
 
 		wk.add({
-			{ "<leader>a", group = "Astro" },
+			{ "<leader>c", group = "Code" },
+			{ "<leader>d", group = "Debugger" },
+			{ "<leader>f", group = "File" },
+			{ "<leader>l", group = "LSP" },
+			{ "<leader>m", group = "Markup" },
+			{ "<leader>s", group = "Search", icon = "" },
+			{ "<leader>t", group = "Tests" },
+			{ "<leader>v", group = "Venv", icon = "" },
 		})
 	end,
 }

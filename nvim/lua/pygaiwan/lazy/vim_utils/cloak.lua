@@ -1,5 +1,17 @@
+-- Mask secret values in environment files while allowing temporary reveal.
 return {
 	"laytan/cloak.nvim",
+	ft = "sh",
+	cmd = {
+		"CloakDisable",
+		"CloakEnable",
+		"CloakPreviewLine",
+		"CloakToggle",
+	},
+	keys = {
+		{ "<leader>cv", "<cmd>CloakPreviewLine<cr>", desc = "[C]loak [V]iew: show token at current line" },
+		{ "<leader>cV", "<cmd>CloakToggle<cr>", desc = "[C]loak [V]iew all file: show all tokens" },
+	},
 	config = function()
 		local cloak = require("cloak")
 		cloak.setup({
@@ -13,12 +25,5 @@ return {
 				},
 			},
 		})
-		vim.keymap.set(
-			"n",
-			"<leader>cv",
-			"<cmd>CloakPreviewLine<cr>",
-			{ desc = "[C]loak [V]iew: show token at current line" }
-		)
-		vim.keymap.set("n", "<leader>cV", "<cmd>CloakToggle<cr>", { desc = "[C]loak [V]iew all file: show all tokens" })
 	end,
 }

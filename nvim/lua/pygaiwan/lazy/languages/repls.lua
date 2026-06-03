@@ -1,3 +1,4 @@
+-- Configure the REPL runner and map language servers to default REPL commands.
 return {
 	"moise-dev/nvim-repl",
 	branch = "master",

@@ -4,22 +4,28 @@
 local autosave_enabled = true
 
 -- Function to (re)register or remove the autosave autocommand
-local function set_autosave(state)
+local function set_autosave(state, opts)
+    opts = opts or {}
     autosave_enabled = state
     if state then
         vim.api.nvim_create_augroup("AutoSave", { clear = true })
         vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged", "TextChangedP" }, {
             group = "AutoSave",
             callback = function()
-                if vim.bo.modifiable and not vim.bo.readonly then
+                local has_file = vim.api.nvim_buf_get_name(0) ~= ""
+                if has_file and vim.bo.buftype == "" and vim.bo.modifiable and not vim.bo.readonly then
                     vim.cmd("silent! update")
                 end
             end,
         })
-        vim.notify("AutoSave enabled", vim.log.levels.INFO)
+        if opts.notify ~= false then
+            vim.notify("AutoSave enabled", vim.log.levels.INFO)
+        end
     else
-        vim.api.nvim_del_augroup_by_name("AutoSave")
-        vim.notify("AutoSave disabled", vim.log.levels.WARN)
+        pcall(vim.api.nvim_del_augroup_by_name, "AutoSave")
+        if opts.notify ~= false then
+            vim.notify("AutoSave disabled", vim.log.levels.WARN)
+        end
     end
 end
 
@@ -37,9 +43,4 @@ vim.api.nvim_create_user_command("AutoSave", function(opts)
     end
 end, { nargs = "?" })
 
--- Keymap <leader>as to toggle AutoSave
-vim.keymap.set("n", "<leader>as", function()
-    vim.cmd("AutoSave toggle")
-end, { desc = "Toggle AutoSave" })
-
-set_autosave(true)
+set_autosave(true, { notify = false })

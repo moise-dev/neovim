@@ -1,6 +1,17 @@
+-- Configure the DAP UI and automatically open or close it with debug sessions.
 return {
 	"rcarriga/nvim-dap-ui",
+	event = "VeryLazy",
 	dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
+	keys = {
+		{
+			"<leader>du",
+			function()
+				require("dapui").toggle()
+			end,
+			desc = "Toggle DAP UI",
+		},
+	},
 	config = function()
 		local dap = require("dap")
 		local dapui = require("dapui")
@@ -16,9 +27,5 @@ return {
 			dapui.close()
 		end
 
-		local wk = require("which-key")
-		wk.add({
-			{ "<leader>du", dapui.toggle, desc = "Toggle DAP UI", mode = "n" },
-		})
 	end,
 }

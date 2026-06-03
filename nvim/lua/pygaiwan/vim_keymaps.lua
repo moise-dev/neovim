@@ -1,9 +1,28 @@
+-- Define global keymaps, diagnostic navigation, and editing shortcuts.
 vim.g.mapleader = " "
-vim.keymap.set("n", "<leader>ex", vim.cmd.Ex, { desc = "Open file explorer" })
+vim.keymap.set("n", "<leader>fe", vim.cmd.Ex, { desc = "Open file explorer" })
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
+vim.keymap.set("n", "[d", function()
+    vim.diagnostic.jump({
+        count = -1,
+        on_jump = function(diagnostic, bufnr)
+            if diagnostic then
+                vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor" })
+            end
+        end,
+    })
+end, { desc = "Go to previous [D]iagnostic message" })
+vim.keymap.set("n", "]d", function()
+    vim.diagnostic.jump({
+        count = 1,
+        on_jump = function(diagnostic, bufnr)
+            if diagnostic then
+                vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor" })
+            end
+        end,
+    })
+end, { desc = "Go to next [D]iagnostic message" })
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
@@ -26,50 +45,57 @@ vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "Save current line to computer 
 vim.keymap.set("n", "Q", "<nop>")
 
 -- Resize vertical panes
-vim.keymap.set("n", "<A-h>", ":vertical resize -5<CR>", { noremap = true, silent = true })
-vim.keymap.set("n", "<A-l>", ":vertical resize +5<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-h>", ":vertical resize -5<CR>", { noremap = true, silent = true, desc = "Resize split left" })
+vim.keymap.set("n", "<A-l>", ":vertical resize +5<CR>", { noremap = true, silent = true, desc = "Resize split right" })
 
 vim.keymap.set("n", "<A-w>", ":set wrap<CR>", { desc = "[W]ord [w]rap" })
 vim.keymap.set("n", "<leader>x", "<cmd>! chmod +x %<CR>", { silent = true, desc = "Make file executable" })
 vim.keymap.set("i", "<C-p>", "<C-x><C-f>", { desc = "Complete Path" })
 
 vim.keymap.set("n", "<leader>as", function()
-	vim.cmd("AutoSave toggle")
+    vim.cmd("AutoSave toggle")
 end, { desc = "Toggle AutoSave" })
 
 vim.filetype.add({
-	extension = {
-		mdx = "markdown",
-	},
+    extension = {
+        mdx = "markdown",
+    },
 })
 
 -- Malware Reports
 vim.keymap.set(
-	"n",
-	"<leader>aa",
-	'i<CustAside variant="answer">\n</CustAside><Esc>',
-	{ noremap = true, silent = true, desc = "Astro Answer" }
+    "n",
+    "<leader>ma",
+    'i<CustAside variant="answer">\n</CustAside><Esc>',
+    { noremap = true, silent = true, desc = "Astro Answer" }
 )
 
 vim.keymap.set(
-	"n",
-	"<leader>ab",
-	'i<Ref id="x"/><Esc>',
-	{ noremap = true, silent = true, desc = "Astro BackReference" }
+    "n",
+    "<leader>mb",
+    'a <Ref id="x"/><Esc>',
+    { noremap = true, silent = true, desc = "Astro BackReference" }
 )
 
 vim.keymap.set(
-	"n",
-	"<leader>aq",
-	'i<CustAside variant="question">\n</CustAside><Esc>',
-	{ noremap = true, silent = true, desc = "Astro Question" }
+    "n",
+    "<leader>mq",
+    'i<CustAside variant="question">\n</CustAside><Esc>',
+    { noremap = true, silent = true, desc = "Astro Question" }
 )
 
-vim.keymap.set("n", "<leader>ar", "a → ", { noremap = true, silent = true, desc = "Astro Arrow" })
+vim.keymap.set(
+    "n",
+    "<leader>mm",
+    'i<Cit id="" pageName="Microsoft" articleName="function" url="" lastAccessDate="xxx xx 2026" /> <Esc>',
+    { noremap = true, silent = true, desc = "Astro Cit Microsoft" }
+)
+
+vim.keymap.set("n", "<leader>mr", "a → ", { noremap = true, silent = true, desc = "Astro Arrow" })
 
 vim.keymap.set(
-	"n",
-	"<leader>at",
-	'i<CustAside variant="tip">\n</CustAside><Esc>',
-	{ noremap = true, silent = true, desc = "Astro Tip" }
+    "n",
+    "<leader>mt",
+    'i<CustAside variant="tip">\n</CustAside><Esc>',
+    { noremap = true, silent = true, desc = "Astro Tip" }
 )

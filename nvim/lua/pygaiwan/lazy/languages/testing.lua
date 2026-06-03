@@ -3,9 +3,47 @@
 
 return {
 	"nvim-neotest/neotest",
+	keys = {
+		{
+			"<leader>tr",
+			function()
+				require("neotest").run.run()
+			end,
+			desc = "Run nearest test",
+		},
+		{
+			"<leader>tR",
+			function()
+				require("neotest").run.run(vim.fn.expand("%"))
+			end,
+			desc = "Run all tests in the file",
+		},
+		{
+			"<leader>td",
+			function()
+				require("neotest").run.run({ strategy = "dap" })
+			end,
+			desc = "Run nearest test in debug",
+		},
+		{
+			"<leader>ts",
+			function()
+				require("neotest").summary.toggle()
+			end,
+			desc = "Toggle test summary",
+		},
+		{
+			"<leader>ti",
+			function()
+				require("neotest").output.open()
+			end,
+			desc = "Open detailed output of the nearest test",
+		},
+	},
 	dependencies = {
 		"nvim-neotest/neotest-python",
 		"nvim-neotest/neotest-jest", -- this needs corepack (npm install corepack)
+		"nvim-neotest/nvim-nio",
 		"nvim-treesitter/nvim-treesitter",
 		"nvim-lua/plenary.nvim",
 	},
@@ -37,49 +75,5 @@ return {
 			},
 		})
 
-		local wk = require("which-key")
-		wk.add({
-			{ "<leader>t", group = "Tests" },
-			{
-				"<leader>tr",
-				function()
-					neotest.run.run()
-				end,
-				desc = "Run nearest test",
-				mode = "n",
-			},
-			{
-				"<leader>tR",
-				function()
-					neotest.run.run(vim.fn.expand("%"))
-				end,
-				desc = "Run all tests in the file",
-				mode = "n",
-			},
-			{
-				"<leader>td",
-				function()
-					neotest.run.run({ strategy = "dap" })
-				end,
-				desc = "Run nearest test in debug",
-				mode = "n",
-			},
-			{
-				"<leader>ts",
-				function()
-					neotest.summary.toggle()
-				end,
-				desc = "Toggle test summary",
-				mode = "n",
-			},
-			{
-				"<leader>ti",
-				function()
-					neotest.output.open()
-				end,
-				desc = "Open detailed output of the nearest test",
-				mode = "n",
-			},
-		})
 	end,
 }

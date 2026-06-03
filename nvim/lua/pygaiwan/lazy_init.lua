@@ -27,16 +27,3 @@ require("lazy").setup({
 	},
 	change_detection = { notify = false },
 })
-require("mason").setup({
-	ui = {
-		icons = {
-			package_installed = "✓",
-			package_pending = "➜",
-			package_uninstalled = "✗",
-		},
-	},
-	pip = {
-		upgrade_pip = true,
-		install_args = { "--no-cache-dir" },
-	},
-})
