@@ -1,6 +1,6 @@
 FROM ghcr.io/moise-dev/nvim-builder AS builder
 
-ARG NVIM_VERSION=0.11
+ARG NVIM_VERSION=0.12
 
 RUN git clone --depth 1 --branch release-${NVIM_VERSION} https://github.com/neovim/neovim.git && \
     cd neovim && \
