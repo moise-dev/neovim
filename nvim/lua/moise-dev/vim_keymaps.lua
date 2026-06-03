@@ -61,6 +61,38 @@ vim.filetype.add({
 })
 
 -- Malware Reports
+local function next_citation_id(bufnr)
+    local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+
+    for line_index = #lines, 1, -1 do
+        local id = lines[line_index]:match('<Cit%s+id="(%d+)"')
+        if id then
+            return tonumber(id) + 1
+        end
+    end
+
+    return 1
+end
+
+local function add_malware_citation()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+    local next_id = next_citation_id(bufnr)
+    local ref = string.format(' <Ref id="%d"/>', next_id)
+    local access_date = vim.fn.strftime("%b %d %Y")
+    local citation = string.format(
+        '<Cit id="%d" pageName="Microsoft" articleName="function" url="" lastAccessDate="%s" />',
+        next_id,
+        access_date
+    )
+    local insert_col = #line == 0 and 0 or math.min(col + 1, #line)
+
+    vim.api.nvim_buf_set_text(bufnr, row - 1, insert_col, row - 1, insert_col, { ref })
+    vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { citation })
+    vim.api.nvim_win_set_cursor(0, { row, insert_col + #ref })
+end
+
 vim.keymap.set(
     "n",
     "<leader>ma",
@@ -74,6 +106,8 @@ vim.keymap.set(
     'a <Ref id="x"/><Esc>',
     { noremap = true, silent = true, desc = "Astro BackReference" }
 )
+
+vim.keymap.set("n", "<leader>mc", add_malware_citation, { noremap = true, silent = true, desc = "Astro Citation" })
 
 vim.keymap.set(
     "n",
