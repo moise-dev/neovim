@@ -5,5 +5,6 @@ RUN apk update && apk add --no-cache \
     build-base \
     cmake \
     gettext \
-    gettext-dev 
+    gettext-dev \
+    linux-headers
 
