@@ -17,6 +17,7 @@ return {
 	dependencies = {
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
+		"hrsh7th/cmp-path",
 		"hrsh7th/cmp-nvim-lsp",
 		"hrsh7th/nvim-cmp",
 	},
@@ -34,7 +35,10 @@ return {
 		)
 
 		cmp.setup({
-			sources = { { name = "nvim_lsp" } },
+			sources = {
+				{ name = "nvim_lsp" },
+				{ name = "path" },
+			},
 			snippet = {
 				expand = function(args)
 					vim.snippet.expand(args.body)
@@ -46,6 +50,16 @@ return {
 				["<CR>"] = cmp.mapping.confirm({ select = true }),
 			}),
 		})
+
+		vim.keymap.set("i", "<C-f>", function()
+			cmp.complete({
+				config = {
+					sources = {
+						{ name = "path" },
+					},
+				},
+			})
+		end, { desc = "Complete file path" })
 
 		require("mason").setup({
 			PATH = "append",
