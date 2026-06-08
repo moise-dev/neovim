@@ -44,11 +44,35 @@ vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "Save current line to computer 
 
 vim.keymap.set("n", "Q", "<nop>")
 
--- Resize vertical panes
-vim.keymap.set("n", "<A-h>", ":vertical resize -5<CR>", { noremap = true, silent = true, desc = "Resize split left" })
-vim.keymap.set("n", "<A-l>", ":vertical resize +5<CR>", { noremap = true, silent = true, desc = "Resize split right" })
+-- Resize panes. macOS terminals often send Option-key as a glyph unless Option
+-- is configured as Meta, so keep literal fallbacks for the default US layout.
+local function set_normal_keymaps(keys, command, desc)
+    for _, key in ipairs(keys) do
+        vim.keymap.set("n", key, command, { noremap = true, silent = true, desc = desc })
+    end
+end
 
-vim.keymap.set("n", "<A-w>", ":set wrap<CR>", { desc = "[W]ord [w]rap" })
+local resize_left_keys = { "<A-h>", "<M-h>" }
+local resize_right_keys = { "<A-l>", "<M-l>" }
+local resize_up_keys = { "<A-k>", "<M-k>" }
+local resize_down_keys = { "<A-j>", "<M-j>" }
+local wrap_keys = { "<A-w>", "<M-w>" }
+
+local uv = vim.uv or vim.loop
+if uv.os_uname().sysname == "Darwin" then
+    vim.list_extend(resize_left_keys, { "˙" })
+    vim.list_extend(resize_right_keys, { "¬" })
+    vim.list_extend(resize_up_keys, { "˚" })
+    vim.list_extend(resize_down_keys, { "∆" })
+    vim.list_extend(wrap_keys, { "∑" })
+end
+
+set_normal_keymaps(resize_left_keys, "<cmd>vertical resize -5<CR>", "Resize split left")
+set_normal_keymaps(resize_right_keys, "<cmd>vertical resize +5<CR>", "Resize split right")
+set_normal_keymaps(resize_up_keys, "<cmd>resize -5<CR>", "Resize split up")
+set_normal_keymaps(resize_down_keys, "<cmd>resize +5<CR>", "Resize split down")
+set_normal_keymaps(wrap_keys, "<cmd>set wrap<CR>", "[W]ord [w]rap")
+
 vim.keymap.set("n", "<leader>x", "<cmd>! chmod +x %<CR>", { silent = true, desc = "Make file executable" })
 vim.keymap.set("n", "<leader>as", function()
     vim.cmd("AutoSave toggle")
